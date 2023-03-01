@@ -1,1 +1,6 @@
-1,Plane,1,23
+1,Plane,3,2
+2,Lego,2,5
+3,Barby,1,25
+4,Iron man,2,12
+5,Monopoly,2,32
+6,Frodo,5,15

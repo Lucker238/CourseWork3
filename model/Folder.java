@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 public class Folder {
@@ -67,4 +68,38 @@ public class Folder {
         }
     }
     
+    public void saveWinToy(String line, String fname) {
+        try (FileWriter writer = new FileWriter(fname, true)) {
+            writer.write(line);
+            writer.append('\n');
+            writer.flush();
+        } catch(IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+   
+    public List<String> showWinPrices(String fName) {
+        List<String> lines = new ArrayList<>();
+        try {
+            File file = new File(fName);
+            BufferedReader bR = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF8"));
+            String line = bR.readLine();
+            if(line != null){
+                lines.add(line);
+            }
+            while(line != null) {
+                line = bR.readLine();
+                if(line != null) {
+                    lines.add(line);
+                }
+            }
+            bR.close();
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return lines;
+    }
 }

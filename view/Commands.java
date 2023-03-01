@@ -9,5 +9,6 @@ public enum Commands {
     SHOW,
     WIN,
     CLOSE,
-    EXIT
+    EXIT,
+    HELP
 }

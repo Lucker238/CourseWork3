@@ -2,7 +2,9 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.HashMap;
 
 public class ToyShop {
     private Mapper mapper = new Mapper();
@@ -48,10 +50,14 @@ public class ToyShop {
         writeDown(toys);
     }
 
-    public void deleteToy(Toy toy) {
+    public void deleteToy(int ID) {
         List<Toy> toys = getAllToys();
-        Toy toyForDel = toys.stream().filter(i -> i.getId() == toy.getId()).findFirst().get();
-        toys.remove(toyForDel);
+        for (Toy toy : toys) {   
+            if(toy.getId() == ID) {
+                toys.remove(toy);
+                break;
+            }
+        }
         editToyList(toys);
     }
 
@@ -77,29 +83,45 @@ public class ToyShop {
     public int attempt() {
         List<Toy> toys = getAllToys();
         for (Toy toy : toys) {
-
-            while(toy.getAmount()>0) { 
+            int n = toy.getAmount();
+            while(n > 0) { 
                 int rnd = new Random().nextInt(99) + 1;
-                if (toy.getChance() <= rnd){
+                if (toy.getChance() >= rnd){
                     return toy.getId();
                 }
-                toy.setAmount(toy.getAmount()-1);
+                n -= 1;
             }
         }
         return -1;
     }
 
-    private void winToy(Toy toy) {
+    public String winToy(int ID) {
         List<Toy> toys = getAllToys();
-        Toy winingToy = toys.stream().filter(i -> i.getId() == toy.getId()).findFirst().get();
-        winingToy.setAmount(winingToy.getAmount() - 1);
-        if (winingToy.getAmount() == 0) {
-            deleteToy(toy);
+        for (Toy toy : toys) {   
+            if(toy.getId() == ID) {
+                String wName = toy.getName();
+                toy.setAmount(toy.getAmount() - 1);
+                if (toy.getAmount() == 0) {
+                    deleteToy(ID);
+                }
+                else {
+                    writeDown(toys);
+                }
+                folder.saveWinToy(wName, "win.txt");
+                return wName;
+            }
         }
-        else {
-            writeDown(toys);
-        }
+        return "None";
     }
 
+    public Map<String, Integer> showWinToys(){
+        List<String> prices = folder.showWinPrices("win.txt");
+        Map<String, Integer> counter = new HashMap<>();
+        for (String string : prices) {
+            int newVal = counter.getOrDefault(string, 0) + 1;
+            counter.put(string, newVal);
+        }
+        return counter;
+    }
 }
 
